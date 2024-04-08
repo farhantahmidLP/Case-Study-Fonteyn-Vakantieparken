@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="icon" href="static/resources/logo.png" type="image/x-icon">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{% block title%}Profile{% endblock %}</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="../static/css/navbar.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300&display=swap" rel="stylesheet">
+    </head>
+    <body >
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages%}
+    {% for category, message in messages%}
+    {% if category == 'error' %}
+    <div class="alert alert-danger alter-dismissable fade show" role=alert>
+        {{ message }}
+        <button type="button" class="close" data-dismiss=alert>
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% else %}
+    <div class="alert alert-success alter-dismissable fade show" role=alert>
+        {{ message }}
+        <button type="button" class="close" data-dismiss=alert>
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+        <nav style="z-index: 1; position: fixed;">
+            <div class="logo"><img  src="static/resources/logo.png" href="/home" width="40" height="40" class="d-inline-block align-top" alt="">
+                <text class="navbar-brand" href="/">Fonteyn</text></div>
+            <div class="navbar">
+                <ul class="nav-menu">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                        <li class="nav-item"><a href="/auth/logout" class="nav-link">Log out</a></li>
+                        <li class="nav-item"><a href="/buy-tickets" class="nav-link">Tickets</a></li>
+                    {% if current_user.admin == 1%}
+                        <li class="nav-item"><a href="/auth/admin" class="nav-link">Admin Panel</a></li>
+                    {% endif %}
+                    {% else %}
+                        <li class="nav-item"><a href="/auth/sign-up" class="nav-link">Register</a></li>
+                        <li class="nav-item"><a href="/auth/login" class="nav-link">Log in</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+        <div class="text-center bg-image" style="font-weight: bold; height: 1000px; vertical-align: middle;">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <div style="margin: auto; width: 50%; border-radius: 15px;
+                    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.7); background-color: rgba(255, 255, 255, 0.4); padding: 20px;">
+                    <h1>Your profile</h1>
+                        <li><a href="/auth/changepass">Change password</a></li>
+                        <p>Email: {{ user.email }}</p>
+                        <p>First Name: {{ user.first_name }}</p>
+                        <p>Phone Number: {{ user.phone_number }}</p>
+                        <p>Age: {{ user.age }}</p>
+                        <p>Nationality: {{ user.nationality }}</p>
+                        <p>Bio: {{ user.bio }}</p>
+
+                        <h2>Ticket Purchases</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                <th>Park</th>
+                                <th>Date</th>
+                                <th>Number of Adults</th>
+                                <th>Number of Children</th>
+                                <th>Total Price</th>
+                                <th>Refunded</th>
+                                <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ticket_purchase in user.ticket_purchases %}
+                                <tr>
+                                    <td>{{ ticket_purchase.park }}</td>
+                                    <td>{{ ticket_purchase.date }}</td>
+                                    <td>{{ ticket_purchase.num_adults }}</td>
+                                    <td>{{ ticket_purchase.num_children }}</td>
+                                    <td>{{ ticket_purchase.total_price }}</td>
+                                    <td>{{ ticket_purchase.is_refunded }}</td>
+                                    <td>
+                                        {% if not ticket_purchase.is_refunded %}
+                                            <form method="POST" action="{{ url_for('auth.refund_ticket', ticket_id=ticket_purchase.id) }}">
+                                                <button type="submit" class="btn btn-primary">Refund</button>
+                                            </form>
+                                        {% else %}
+                                            <span class="badge badge-secondary">Refunded</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                </div>
+            </div>
+        </div>
+<script src=""></script>
+        <script>
+        const hamburger = document.querySelector(".hamburger");
+const navMenu = document.querySelector(".nav-menu");
+
+hamburger.addEventListener("click", () => {
+    hamburger.classList.toggle("active");
+    navMenu.classList.toggle("active");
+});
+
+document.querySelectorAll(".nav-link").forEach((link) =>
+    link.addEventListener("click", () => {
+    hamburger.classList.remove("active");
+    navMenu.classList.remove("active");
+    })
+);
+
+        </script>
+    </body>

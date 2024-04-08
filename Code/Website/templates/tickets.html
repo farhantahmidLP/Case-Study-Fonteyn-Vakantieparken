@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="icon" href="static/resources/logo.png" type="image/x-icon">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{% block title%}Home{% endblock %}</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="../static/css/navbar.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300&display=swap" rel="stylesheet">
+    </head>
+    <body >
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages%}
+    {% for category, message in messages%}
+    {% if category == 'error' %}
+    <div class="alert alert-danger alter-dismissable fade show" role=alert>
+        {{ message }}
+        <button type="button" class="close" data-dismiss=alert>
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% else %}
+    <div class="alert alert-success alter-dismissable fade show" role=alert>
+        {{ message }}
+        <button type="button" class="close" data-dismiss=alert>
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+        <nav style="z-index: 1; position: fixed;">
+            <div class="logo"><img  src="static/resources/logo.png" href="/home" width="40" height="40" class="d-inline-block align-top" alt="">
+                <text class="navbar-brand" href="/">Fonteyn</text></div>
+            <div class="navbar">
+                <ul class="nav-menu">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+                        <li class="nav-item"><a href="/auth/logout" class="nav-link">Log out</a></li>
+                        <li class="nav-item"><a href="/buy-tickets" class="nav-link">Tickets</a></li>
+                    {% if current_user.admin == 1%}
+                        <li class="nav-item"><a href="/auth/admin" class="nav-link">Admin Panel</a></li>
+                    {% endif %}
+                    {% else %}
+                        <li class="nav-item"><a href="/auth/sign-up" class="nav-link">Register</a></li>
+                        <li class="nav-item"><a href="/auth/login" class="nav-link">Log in</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+        <div class="text-center bg-image" style="font-weight: bold; height: 1000px; vertical-align: middle;">
+            <div class="d-flex justify-content-center align-items-center h-100">
+                <div style="margin: auto; width: 50%; border-radius: 15px;
+                    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.7); background-color: rgba(255, 255, 255, 0.4); padding: 20px;">
+                    <h1>Buy Tickets</h1>
+                    <form method="POST">
+                        <div class="form-group">
+                            <label for="ticket-type">Ticket Type:</label>
+                            <select class="form-control" id="ticket-type" name="ticket-type">
+                                <option value="standard">Standard</option>
+                                <option value="premium">Premium</option>
+                                <option value="vip">VIP</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="num-adults">Number of Adults:</label>
+                            <input type="number" class="form-control" id="num-adults" name="num-adults" min="1" max="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="num-children">Number of Children:</label>
+                            <input type="number" class="form-control" id="num-children" name="num-children" min="0" max="10" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="park-select">Select Park:</label>
+                            <select class="form-control" id="park-name" name="park-name">
+                                <option value="Fonteyn" selected>Fonteyn</option>
+                                <option value="Presikhaaf">Presikhaaf</option>
+                                <option value="Sonsbeek">Sonsbeek</option>
+                                <option value="TU/e">TU/e</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Purchase Tickets</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+<script src=""></script>
+        <script>
+        const hamburger = document.querySelector(".hamburger");
+const navMenu = document.querySelector(".nav-menu");
+
+hamburger.addEventListener("click", () => {
+    hamburger.classList.toggle("active");
+    navMenu.classList.toggle("active");
+});
+
+document.querySelectorAll(".nav-link").forEach((link) =>
+    link.addEventListener("click", () => {
+    hamburger.classList.remove("active");
+    navMenu.classList.remove("active");
+    })
+);
+
+        </script>
+    </body>

@@ -1,0 +1,7 @@
+The link to the project git repository is:
+
+https://git.fhict.nl/I506275/cb01-group2-kabv.git
+
+Or
+
+https://git.fhict.nl/I506275/cb01-group2-kabv

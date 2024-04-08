@@ -1,0 +1,10 @@
+version: "2"
+
+services:
+  app:
+    image: jzthehypebeast/fonteyn
+    # build: .
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "80:80"
